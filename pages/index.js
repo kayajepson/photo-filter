@@ -35,6 +35,7 @@ function Home() {
       for (let el of multiTag) {
         filteredImages.push(tagsToImages[el]);
       }
+      //deduplication of images
       setImages([...new Set(filteredImages.flat())]);
     }
   }, [multiTag]);
@@ -60,7 +61,7 @@ function Home() {
       <div className="col-start-2 col-end-3">
         <div className="grid grid-cols-1">
         <button
-            className="py-2 px-4 mt-4 bg-green-400 text-white rounded-md max-w-max hover:bg-opacity-75"
+            className="py-2 px-4 mt-4 text-xs bg-green-400 text-white rounded-md max-w-max hover:bg-opacity-75"
             onClick={() => clear()}
           >
             Clear
