@@ -2,6 +2,7 @@ import Card from "../components/Card";
 import Button from "../components/Button";
 import { data, tagsToImages } from "../utils/data.js";
 import { useState, useEffect } from "react";
+import TagSuggestor from "../components/TagGenerator";
 
 function shuffle(array) {
   var currentIndex = array.length,
@@ -44,48 +45,48 @@ function Home() {
     setMultiTag([...multiTag, text]);
   }
 
-  function suggestions(){
-    if(multiTag.length) {
-      
-    }
-  }
-
   function clear() {
     setImages(data);
     setMultiTag([]);
   }
 
+  //grabbed tags from some of the images in data for now
+  const suggestor = new TagSuggestor([['green', 'palm', 'plant', 'bright', 'happy'], ['green', 'monstera', 'plant', 'airy', 'happy'],['bike', 'ocean', 'plant'], ['green', 'moss', 'plant', 'moody', 'dark'], ['purple', 'floral', 'plant'], ['floral', 'pink', 'plant', 'yellow', 'happy']]);
+  const suggestedTags = suggestor.suggestTags(multiTag);
+  if (suggestedTags.length > 0) {
+    console.log(suggestedTags);
+  }
+
   return (
     <>
-    <div className="grid grid-cols-12 w-full">
-      <div className="col-start-2 col-end-3">
-        <div className="grid grid-cols-1">
-        <button
-            className="py-2 px-4 mt-4 text-xs bg-green-400 text-white rounded-md max-w-max hover:bg-opacity-75"
-            onClick={() => clear()}
-          >
-            Clear
-          </button>
+      <div className="grid grid-cols-12 w-full">
+        <div className="col-start-2 col-end-3">
+          <div className="grid grid-cols-1">
+            <button
+              className="py-2 px-4 mt-4 text-xs bg-green-400 text-white rounded-md max-w-max hover:bg-opacity-75"
+              onClick={() => clear()}
+            >
+              Clear
+            </button>
 
-          {tags.map((a) => (
-            <Button key={a} onClick={() => setMultipleTags(a)}>
-              {a}
-            </Button>
-          ))}
-
+            {tags.map((a) => (
+              <Button key={a} onClick={() => setMultipleTags(a)}>
+                {a}
+              </Button>
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="col-start-3 col-end-12">
-        <div className="grid grid-cols-3 gap-3 justify-items-center w-full mt-4">
-          {shuffle(images).map((a, i) => (
-            <Card key={i} image={a.imageUrl} />
-          ))}
-          {/* {images.map((a, i) => (
+        <div className="col-start-3 col-end-12">
+          <div className="grid grid-cols-3 gap-3 justify-items-center w-full mt-4">
+            {shuffle(images).map((a, i) => (
+              <Card key={i} image={a.imageUrl} />
+            ))}
+            {/* {images.map((a, i) => (
           <Card key={i} image={a.imageUrl} />
         ))} */}
+          </div>
         </div>
       </div>
-    </div>
     </>
   );
 }
