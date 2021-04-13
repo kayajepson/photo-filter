@@ -3,19 +3,17 @@ import Button from "../components/Button";
 import { data, tagsToImages } from "../utils/data.js";
 import { useState, useEffect } from "react";
 import TagSuggestor from "../components/TagGenerator";
+import groupings from '../utils/tagGroupings'
 
 function shuffle(array) {
   var currentIndex = array.length,
     temporaryValue,
     randomIndex;
 
-  // While there remain elements to shuffle...
   while (0 !== currentIndex) {
-    // Pick a remaining element...
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex -= 1;
 
-    // And swap it with the current element.
     temporaryValue = array[currentIndex];
     array[currentIndex] = array[randomIndex];
     array[randomIndex] = temporaryValue;
@@ -27,6 +25,7 @@ function Home() {
   const [images, setImages] = useState(data);
   const [tags, setTags] = useState(Object.keys(tagsToImages));
   const [multiTag, setMultiTag] = useState([]);
+  const [suggestions, setSuggestions] = useState();
   let filteredImages = [];
 
   useEffect(() => {
@@ -36,8 +35,14 @@ function Home() {
       for (let el of multiTag) {
         filteredImages.push(tagsToImages[el]);
       }
-      //deduplication of images
       setImages([...new Set(filteredImages.flat())]);
+    }
+    if (suggestedTags.length > 0) {
+      const imageSet = new Set();
+      for (const tag of suggestedTags){
+        imageSet.add(tagsToImages[tag][0])
+      }
+      setSuggestions([...imageSet]);
     }
   }, [multiTag]);
 
@@ -48,14 +53,12 @@ function Home() {
   function clear() {
     setImages(data);
     setMultiTag([]);
+    setSuggestions([]);
   }
 
-  //grabbed tags from some of the images in data for now
-  const suggestor = new TagSuggestor([['green', 'palm', 'plant', 'bright', 'happy'], ['green', 'monstera', 'plant', 'airy', 'happy'],['bike', 'ocean', 'plant'], ['green', 'moss', 'plant', 'moody', 'dark'], ['purple', 'floral', 'plant'], ['floral', 'pink', 'plant', 'yellow', 'happy']]);
+  const suggestor = new TagSuggestor(groupings);
   const suggestedTags = suggestor.suggestTags(multiTag);
-  if (suggestedTags.length > 0) {
-    console.log(suggestedTags);
-  }
+ 
 
   return (
     <>
@@ -77,13 +80,15 @@ function Home() {
           </div>
         </div>
         <div className="col-start-3 col-end-12">
+        <div className="grid grid-cols-3 gap-3 justify-items-center w-full mt-4">
+            {suggestions && (suggestions).map((a, i) => (
+              <Card key={i} className="border-solid border-4 border-green-400" image={a.imageUrl} />
+            ))}
+          </div>
           <div className="grid grid-cols-3 gap-3 justify-items-center w-full mt-4">
             {shuffle(images).map((a, i) => (
               <Card key={i} image={a.imageUrl} />
             ))}
-            {/* {images.map((a, i) => (
-          <Card key={i} image={a.imageUrl} />
-        ))} */}
           </div>
         </div>
       </div>

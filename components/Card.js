@@ -1,10 +1,11 @@
 import Image from "next/image";
 
 function Card({
-    image = ''
+  className = '',
+  image = ''
 }) {
   return (
-    <div className="w-full h-96 md:h-screen/2 relative" data-testid="card-container">
+    <div className={`w-full h-96 md:h-screen/2 relative ${className}`} data-testid="card-container">
         <Image
           src={image}
           data-testid="card-image"
